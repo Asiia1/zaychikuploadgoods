@@ -3,6 +3,7 @@ import path from 'node:path';
 import xmlFlow from 'xml-flow';
 import { MAX_ITEMS } from '../config.js';
 import { normalizeProduct } from '../normalizers/normalizeProduct.js';
+import { mapToHoroshopProduct } from '../mappers/mapToHoroshopProduct.js';
 
 export function parseXmlToJson(xmlPath) {
     return new Promise((resolve, reject) => {
@@ -17,6 +18,7 @@ export function parseXmlToJson(xmlPath) {
         out.write('[');
 
         const sample = [];
+        const products = [];
         let count = 0;
         let wroteAny = false;
         let finalized = false;
@@ -35,8 +37,10 @@ export function parseXmlToJson(xmlPath) {
             if (finalized) return;
 
             const normalized = normalizeProduct(node);
-
             if (!normalized.sku && !normalized.name) return;
+
+            const horoshopProduct = mapToHoroshopProduct(normalized);
+            products.push(horoshopProduct);
 
             if (wroteAny) out.write(',');
             out.write('\n' + JSON.stringify(normalized));
@@ -79,7 +83,7 @@ export function parseXmlToJson(xmlPath) {
                 console.log(`Sample: ${samplePath}`);
                 console.log(`Всего товаров: ${count}${MAX_ITEMS ? ` (лимит ${MAX_ITEMS})` : ''}`);
 
-                resolve({ jsonPath, samplePath, count });
+                resolve({ jsonPath, samplePath, count, products });
             } catch (err) {
                 reject(err);
             }
