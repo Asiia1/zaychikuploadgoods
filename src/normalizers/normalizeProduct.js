@@ -1,6 +1,8 @@
 export function normalizeProduct(p) {
+    console.log('p:>',p);
     const sku =
         p.vendorCode ||
+        p.vendorcode ||
         p.vendor_code ||
         p.article ||
         p.sku ||
@@ -26,13 +28,45 @@ export function normalizeProduct(p) {
 
     const oldPrice = p.oldprice ?? p['old-price'] ?? p.OldPrice ?? null;
 
+    function parseQty(value) {
+        if (value == null) return null;
+        if (typeof value === 'number' && Number.isFinite(value)) return value;
+
+        const raw = String(value).trim().toLowerCase();
+
+        if (!raw) return null;
+
+        // убираем "шт", "шт.", лишние пробелы
+        const cleaned = raw.replace(/шт\.?/gi, '').trim();
+
+        // диапазон вида "10...50", "10 ... 50", "10-50"
+        const rangeMatch = cleaned.match(/(\d+(?:[.,]\d+)?)\s*(?:\.\.\.|-|–|—)\s*(\d+(?:[.,]\d+)?)/);
+        if (rangeMatch) {
+            const left = Number(rangeMatch[1].replace(',', '.'));
+            const right = Number(rangeMatch[2].replace(',', '.'));
+
+            if (Number.isFinite(left) && Number.isFinite(right)) {
+                return Math.min(left, right);
+            }
+        }
+
+        // просто первое число
+        const singleMatch = cleaned.match(/\d+(?:[.,]\d+)?/);
+        if (singleMatch) {
+            const num = Number(singleMatch[0].replace(',', '.'));
+            return Number.isFinite(num) ? num : null;
+        }
+
+        return null;
+    }
+
     const qty =
-        p.quantity != null
-            ? Number(p.quantity)
+        p.ostatok != null
+            ? parseQty(p.ostatok)
             : p.qty != null
-                ? Number(p.qty)
+                ? parseQty(p.qty)
                 : p.stock != null
-                    ? Number(p.stock)
+                    ? parseQty(p.stock)
                     : null;
 
     const available =
