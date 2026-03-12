@@ -19,20 +19,20 @@ function maskToken(token) {
         console.log(`✅ Токен получен: ${maskToken(token)}`);
 
         const xmlPath = await downloadFeed(FEED_URL);
-        // console.log(`📥 XML загружен: ${xmlPath}`);
+        console.log(`📥 XML загружен: ${xmlPath}`);
 
         const { jsonPath, products } = await parseXmlToJson(xmlPath);
         console.log(`🧩 Подготовлено товаров к импорту: ${products.length}`);
 
         try {
-            // await importToHoroshop(token, products);
+            await importToHoroshop(token, products);
             console.log('✅ Обновление товаров завершено');
         } catch (error) {
             console.error(`❌ Ошибка во время импорта товаров: ${error.message}`);
         }
 
-        // const latestPath = await writeLatestCopy(jsonPath);
-        // console.log(`🔖 Обновлён latest: ${latestPath}`);
+        const latestPath = await writeLatestCopy(jsonPath);
+        console.log(`🔖 Обновлён latest: ${latestPath}`);
     } catch (e) {
         console.error('❌ Ошибка пайплайна:', e.message);
         process.exit(1);
