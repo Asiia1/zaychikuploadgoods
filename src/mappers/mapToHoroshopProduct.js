@@ -1,3 +1,5 @@
+import { mapCategory } from './categoryMap.js';
+
 export function mapToHoroshopProduct(product) {
     const quantity = Number.isFinite(product.qty) ? product.qty : 0;
     const imageLinks = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
@@ -16,7 +18,7 @@ export function mapToHoroshopProduct(product) {
         oldprice: product.oldPrice != null ? product.oldPrice : undefined,
         currency: 'UAH',
         presence: inStock ? 'В наявності' : 'Немає в наявності',
-        parent: product.category || '',
+        parent: mapCategory(product.category || ''),
         brand: product.brand || '',
         images: {
             links: imageLinks,
