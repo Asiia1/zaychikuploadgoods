@@ -9,7 +9,7 @@ export function mapToHoroshopProduct(product) {
         name,
         value: String(value)
     }));
-
+    // console.log('product::>',product);
     return {
         article: product.sku || '',
         title: product.name || '',
@@ -18,7 +18,7 @@ export function mapToHoroshopProduct(product) {
         oldprice: product.oldPrice != null ? product.oldPrice : undefined,
         currency: 'UAH',
         presence: inStock ? 'В наявності' : 'Немає в наявності',
-        parent: mapCategory(product.category || ''),
+        parent: product.category || '',
         brand: product.brand || '',
         images: {
             links: imageLinks,

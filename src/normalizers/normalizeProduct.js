@@ -1,4 +1,5 @@
 export function normalizeProduct(p) {
+    console.log('p::>',p);
     const sku =
         p.vendorCode ||
         p.vendorcode ||
@@ -88,6 +89,7 @@ export function normalizeProduct(p) {
         p.category ||
         p['category-id'] ||
         p.category_name ||
+        p.categoryid ||
         p.Category ||
         p.group ||
         '';
@@ -122,6 +124,9 @@ export function normalizeProduct(p) {
         }
     }
 
+    const keywords = p['keywords'] ?? p['keywords'];
+    const portal_category_id = p['portal_category_id'] ?? p['portal_category_id']
+
     return {
         sku,
         name,
@@ -133,6 +138,8 @@ export function normalizeProduct(p) {
         available,
         images,
         description,
-        attributes
+        attributes,
+        keywords,
+        portal_category_id
     };
 }
