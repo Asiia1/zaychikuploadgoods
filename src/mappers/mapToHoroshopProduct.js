@@ -1,6 +1,12 @@
 export function mapToHoroshopProduct(product) {
     const quantity = Number.isFinite(product.qty) ? product.qty : 0;
     const imageLinks = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
+    const inStock = quantity > 0 || product.available === true;
+
+    const attributes = Object.entries(product.attributes || {}).map(([name, value]) => ({
+        name,
+        value: String(value)
+    }));
 
     return {
         article: product.sku || '',
@@ -9,7 +15,7 @@ export function mapToHoroshopProduct(product) {
         price: Number.isFinite(product.price) ? product.price : 0,
         oldprice: product.oldPrice != null ? product.oldPrice : undefined,
         currency: 'UAH',
-        presence: quantity > 0 ? 'В наявності' : 'Немає в наявності',
+        presence: inStock ? 'В наявності' : 'Немає в наявності',
         parent: product.category || '',
         brand: product.brand || '',
         images: {
@@ -23,6 +29,6 @@ export function mapToHoroshopProduct(product) {
             }
         ],
         display_in_showcase: true,
-        attributes: product.attributes || {}
+        attributes
     };
 }

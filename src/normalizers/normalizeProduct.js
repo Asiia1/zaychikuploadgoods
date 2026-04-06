@@ -1,5 +1,4 @@
 export function normalizeProduct(p) {
-    console.log('p:>',p);
     const sku =
         p.vendorCode ||
         p.vendorcode ||
@@ -110,6 +109,18 @@ export function normalizeProduct(p) {
     if (p.w != null) attributes.width = attributes.width ?? p.w;
     if (p.h != null) attributes.height = attributes.height ?? p.h;
     if (p['weight-kg'] != null) attributes.weight = attributes.weight ?? p['weight-kg'];
+
+    // YML <param name="...">value</param> — xml-flow отдаёт как p.param
+    if (p.param != null) {
+        const params = Array.isArray(p.param) ? p.param : [p.param];
+        for (const param of params) {
+            const name = param.$name || param.name;
+            const value = param.$text ?? param.value ?? param._;
+            if (name != null && value != null) {
+                attributes[String(name)] = value;
+            }
+        }
+    }
 
     return {
         sku,

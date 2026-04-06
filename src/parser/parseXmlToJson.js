@@ -43,7 +43,7 @@ export function parseXmlToJson(xmlPath) {
             products.push(horoshopProduct);
 
             if (wroteAny) out.write(',');
-            out.write('\n' + JSON.stringify(normalized));
+            out.write('\n' + JSON.stringify(horoshopProduct));
             wroteAny = true;
 
             if (sample.length < 50) sample.push(normalized);
