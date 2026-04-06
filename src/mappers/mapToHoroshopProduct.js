@@ -13,6 +13,7 @@ export function mapToHoroshopProduct(product) {
     return {
         article: product.sku || '',
         title: product.name || '',
+        keywords: product.keywords || '',
         description: product.description || '',
         price: Number.isFinite(product.price) ? product.price : 0,
         oldprice: product.oldPrice != null ? product.oldPrice : undefined,
